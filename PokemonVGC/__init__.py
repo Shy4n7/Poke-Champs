@@ -1,6 +1,7 @@
 import random
 import os
 import sys
+import re
 
 # Terminal Color Codes
 GREEN = "\033[92m"
@@ -479,7 +480,16 @@ def get_dashboard_active_line(pos_str, p, is_player):
     hp_bar_raw = "[" + "=" * int(round(p['hp']/p['max_hp']*10)) + "-" * (10 - int(round(p['hp']/p['max_hp']*10))) + "]"
     stages_list = [f"{k}{v:+d}" for k, v in p['stat_stages'].items() if v != 0]
     stages_str = f" ({','.join(stages_list)})" if stages_list else ""
-    status_str = f" [{p['status']}]" if p['status'] else ""
+    
+    # Calculate plain status badge representation
+    status_str = ""
+    if p['status'] == 'Burn':
+        status_str = " [BRN]"
+    elif p['status'] == 'Paralyzed':
+        status_str = " [PAR]"
+    elif p['status']:
+        status_str = f" [{p['status']}]"
+        
     charging_str = f" (Chg:{p['charging_move']})" if p['is_charging'] else ""
     
     # Compute padding
@@ -496,8 +506,14 @@ def get_dashboard_active_line(pos_str, p, is_player):
     bar_color = GREEN if pct > 0.5 else (YELLOW if pct > 0.2 else RED)
     colored_bar = f"{bar_color}{hp_bar_raw}{RESET}"
     
-    # Colorize status
-    colored_status = f" [{RED}{p['status']}{RESET}]" if p['status'] else ""
+    # Colorize status badge
+    colored_status = ""
+    if p['status'] == 'Burn':
+        colored_status = f" [{RED}BRN{RESET}]"
+    elif p['status'] == 'Paralyzed':
+        colored_status = f" [{YELLOW}PAR{RESET}]"
+    elif p['status']:
+        colored_status = f" [{WHITE}{p['status']}{RESET}]"
     
     # Colorize stages
     colored_stages = ""
@@ -520,7 +536,7 @@ def draw_dashboard(state):
     # Header box top border
     print(f"{CYAN}+----------------------------------------------------------+{RESET}")
     
-    # Weather, Trick Room, and Terrain Indicators
+    # Weather, Trick Room, and Terrain Indicators as Badges
     weather_str = "NONE"
     if state['weather'] == 'Sun':
         weather_str = "SUN"
@@ -529,42 +545,42 @@ def draw_dashboard(state):
     elif state['weather'] == 'Sandstorm':
         weather_str = "SANDSTORM"
         
-    weather_text = f"WEATHER: {weather_str}"
+    weather_badge = f"[WEATHER: {weather_str}]"
     if state['weather'] != 'None':
-        weather_text += f" ({state['weather_turns']}t)"
+        weather_badge = f"[WEATHER: {weather_str} ({state['weather_turns']}t)]"
         
-    tr_text = ""
+    tr_badge = ""
     if state['trick_room'] > 0:
-        tr_text = f" | TRICK ROOM ({state['trick_room']}t)"
+        tr_badge = f" [TRICK ROOM ({state['trick_room']}t)]"
         
-    pt_text = ""
+    pt_badge = ""
     if state.get('psychic_terrain', 0) > 0:
-        pt_text = f" | PSYCHIC TERRAIN ({state['psychic_terrain']}t)"
+        pt_badge = f" [PSYCHIC TERRAIN ({state['psychic_terrain']}t)]"
         
-    full_weather_plain = f" {weather_text}{tr_text}{pt_text}"
-    weather_pad = " " * max(0, 56 - len(full_weather_plain))
+    full_header_plain = f" {weather_badge}{tr_badge}{pt_badge}"
+    weather_pad = " " * max(0, 56 - len(full_header_plain))
     
-    # Colorize weather text
-    w_color = YELLOW if state['weather'] == 'Sun' else (BLUE if state['weather'] == 'Rain' else (YELLOW if state['weather'] == 'Sandstorm' else WHITE))
-    colored_weather_str = f"{w_color}{weather_str}{RESET}"
-    
-    colored_weather_text = f"WEATHER: {colored_weather_str}"
+    w_color = YELLOW if state['weather'] == 'Sun' else (BLUE if state['weather'] == 'Rain' else (GRAY if state['weather'] == 'Sandstorm' else WHITE))
+    colored_weather_badge = f"[{w_color}WEATHER: {weather_str}{RESET}"
     if state['weather'] != 'None':
-        colored_weather_text += f" ({state['weather_turns']}t)"
-        
-    colored_tr_text = ""
+        colored_weather_badge += f" ({state['weather_turns']}t)"
+    colored_weather_badge += "]"
+    
+    colored_tr_badge = ""
     if state['trick_room'] > 0:
-        colored_tr_text = f" | {PURPLE}TRICK ROOM ({state['trick_room']}t){RESET}"
+        colored_tr_badge = f" [{PURPLE}TRICK ROOM ({state['trick_room']}t){RESET}]"
         
-    colored_pt_text = ""
+    colored_pt_badge = ""
     if state.get('psychic_terrain', 0) > 0:
-        colored_pt_text = f" | {PURPLE}PSYCHIC TERRAIN ({state['psychic_terrain']}t){RESET}"
+        colored_pt_badge = f" [{PURPLE}PSYCHIC TERRAIN ({state['psychic_terrain']}t){RESET}]"
         
-    print(f"{CYAN}|{RESET} {colored_weather_text}{colored_tr_text}{colored_pt_text}{weather_pad} {CYAN}|{RESET}")
+    print(f"{CYAN}|{RESET} {colored_weather_badge}{colored_tr_badge}{colored_pt_badge}{weather_pad} {CYAN}|{RESET}")
     print(f"{CYAN}+----------------------------------------------------------+{RESET}")
     
     # Opponents Active
     opp_header = " [FOE FIELD]"
+    if state.get('opponent_tailwind', 0) > 0:
+        opp_header += f" [TAILWIND ({state['opponent_tailwind']}t)]"
     opp_pad = " " * (56 - len(opp_header))
     print(f"{CYAN}|{RESET} {RED}{opp_header}{RESET}{opp_pad} {CYAN}|{RESET}")
     for i, p in enumerate(state['opponent_active']):
@@ -576,6 +592,8 @@ def draw_dashboard(state):
     
     # Allies Active
     allied_header = " [ALLIED FIELD]"
+    if state.get('player_tailwind', 0) > 0:
+        allied_header += f" [TAILWIND ({state['player_tailwind']}t)]"
     allied_pad = " " * (56 - len(allied_header))
     print(f"{CYAN}|{RESET} {GREEN}{allied_header}{RESET}{allied_pad} {CYAN}|{RESET}")
     for i, p in enumerate(state['player_active']):
@@ -600,6 +618,22 @@ def draw_dashboard(state):
     
     print(f"{CYAN}|{RESET} {colored_bench_p}{p_bench_pad} {CYAN}|{RESET}")
     print(f"{CYAN}|{RESET} {colored_bench_o}{o_bench_pad} {CYAN}|{RESET}")
+    print(f"{CYAN}+----------------------------------------------------------+{RESET}")
+    
+    # Persistent Battle Event Log Box
+    print(f"{CYAN}|                    BATTLE EVENT LOG                      |{RESET}")
+    print(f"{CYAN}+----------------------------------------------------------+{RESET}")
+    
+    logs = state.get('battle_log', [])[-6:]
+    while len(logs) < 6:
+        logs.insert(0, "")
+        
+    ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
+    for log in logs:
+        log_clean = log.rstrip('\r\n')
+        raw_len = len(ansi_escape.sub('', log_clean))
+        pad_len = max(0, 56 - raw_len)
+        print(f"{CYAN}|{RESET} {log_clean}{' ' * pad_len} {CYAN}|{RESET}")
     print(f"{CYAN}+----------------------------------------------------------+{RESET}\n")
 
 
@@ -1399,6 +1433,31 @@ def get_ai_actions(state):
     return actions
 
 
+class LogCapture:
+    def __init__(self, state):
+        self.state = state
+        self.terminal = sys.stdout
+        self.buffer = ""
+        
+    def write(self, message):
+        self.terminal.write(message)
+        self.buffer += message
+        if '\n' in self.buffer:
+            lines = self.buffer.split('\n')
+            for line in lines[:-1]:
+                cleaned = line.strip()
+                if cleaned:
+                    if 'battle_log' not in self.state:
+                        self.state['battle_log'] = []
+                    self.state['battle_log'].append(line.rstrip('\r\n'))
+                    if len(self.state['battle_log']) > 50:
+                        self.state['battle_log'].pop(0)
+            self.buffer = lines[-1]
+            
+    def flush(self):
+        self.terminal.flush()
+
+
 def resolve_actions(player_actions, ai_actions, state):
     all_actions = player_actions + ai_actions
     
@@ -1767,7 +1826,13 @@ def run_simulator():
     
     print(f"\n{YELLOW}[System] The battle is beginning! Sending out lead Pokemon...{RESET}\n")
     # Trigger start of battle entrance abilities
-    trigger_start_entrance_abilities(state)
+    original_stdout = sys.stdout
+    capture = LogCapture(state)
+    sys.stdout = capture
+    try:
+        trigger_start_entrance_abilities(state)
+    finally:
+        sys.stdout = original_stdout
     
     turn = 1
     while True:
@@ -1787,10 +1852,16 @@ def run_simulator():
         ai_actions = get_ai_actions(state)
         
         # 3. Resolve actions
-        resolve_actions(player_actions, ai_actions, state)
-        
-        # 4. End of turn cleanup
-        resolve_end_of_turn(state)
+        original_stdout = sys.stdout
+        capture = LogCapture(state)
+        sys.stdout = capture
+        try:
+            resolve_actions(player_actions, ai_actions, state)
+            
+            # 4. End of turn cleanup
+            resolve_end_of_turn(state)
+        finally:
+            sys.stdout = original_stdout
         
         # 5. Victory check
         if check_battle_end(state):
