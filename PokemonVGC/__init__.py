@@ -74,7 +74,7 @@ MOVE_DB = {
     'Tailwind': {'power': 0, 'type': 'Flying', 'category': 'Status', 'target': 'Self', 'accuracy': 100, 'priority': 0},
 
     # New Moves
-    'Surging Strikes': {'power': 75, 'type': 'Water', 'category': 'Physical', 'target': 'Single Enemy', 'accuracy': 100, 'priority': 0},
+    'Surging Strikes': {'power': 25, 'type': 'Water', 'category': 'Physical', 'target': 'Single Enemy', 'accuracy': 100, 'priority': 0},
     'Aqua Jet': {'power': 40, 'type': 'Water', 'category': 'Physical', 'target': 'Single Enemy', 'accuracy': 100, 'priority': 1},
     'Facade': {'power': 70, 'type': 'Normal', 'category': 'Physical', 'target': 'Single Enemy', 'accuracy': 100, 'priority': 0},
     'Psychic': {'power': 90, 'type': 'Psychic', 'category': 'Special', 'target': 'Single Enemy', 'accuracy': 100, 'priority': 0},
@@ -700,6 +700,25 @@ def execute_move(attacker, move_name, target_idx, allies, foes, state):
     
     # Execute against each target
     for target in targets:
+        # Sucker Punch check
+        if move_name == 'Sucker Punch':
+            # Fails if the target has already moved
+            if target.get('moved_this_turn', False):
+                print(f"  {GRAY}But Sucker Punch failed! (Target has already moved this turn){RESET}")
+                continue
+                
+            # Find the target's action in state['current_actions']
+            target_action = None
+            for action in state.get('current_actions', []):
+                if action['type'] == 'move' and action['pokemon'] == target:
+                    target_action = action
+                    break
+            
+            # Fails if target has not selected a damaging move
+            if not target_action or MOVE_DB[target_action['move_name']]['category'] == 'Status':
+                print(f"  {GRAY}But Sucker Punch failed! (Target is not preparing a damaging attack){RESET}")
+                continue
+
         # Good as Gold check (blocks status moves from opponent)
         if target['ability'] == 'Good as Gold' and move['category'] == 'Status' and target['is_player'] != attacker['is_player'] and move['target'] != 'Self':
             print(f"  {YELLOW}[Ability] {target['name']}'s Good as Gold blocked the status move!{RESET}")
@@ -781,162 +800,178 @@ def execute_move(attacker, move_name, target_idx, allies, foes, state):
             print(f"  {BLUE}[Ability] {target['name']}'s Storm Drain absorbed the Water move and boosted its Special Attack! (SpA: {target['stat_stages']['spa']:+d}){RESET}")
             continue
 
-        # Attack Damage calculations
-        power = move['power']
-        move_type = move['type']
+        # Determine number of hits (Surging Strikes hits 3 times)
+        num_hits = 3 if move_name == 'Surging Strikes' else 1
+        hits_landed = 0
         
-        # Weather Ball adjustments
-        if move_name == 'Weather Ball':
-            if state['weather'] == 'Sun':
-                move_type = 'Fire'
-                power = 100
-            elif state['weather'] == 'Rain':
-                move_type = 'Water'
-                power = 100
-            else:
-                move_type = 'Normal'
-                power = 50
+        for hit_idx in range(num_hits):
+            if target['hp'] <= 0:
+                break
                 
-        # Eruption scales with HP percentage
-        if move_name == 'Eruption':
-            power = int(150 * (attacker['hp'] / attacker['max_hp']))
-            power = max(1, power)
-            
-        # Facade power boost
-        if move_name == 'Facade' and attacker['status'] is not None:
-            power = 140
-            
-        # Expanding Force terrain adjustment
-        if move_name == 'Expanding Force' and state.get('psychic_terrain', 0) > 0:
-            power = 120
-            
-        # Check Critical Hit (1/24 standard crit rate, Surging Strikes always crits)
-        is_crit = (random.random() < (1.0 / 24.0)) or (move_name == 'Surging Strikes')
-        
-        # Pick offensive stats
-        if move_name == 'Body Press':
-            # Critical hits ignore attacker negative stages
-            A = get_effective_stat(attacker, 'def', state, ignore_negative_stages=is_crit)
-        elif move['category'] == 'Physical':
-            A = get_effective_stat(attacker, 'atk', state, ignore_negative_stages=is_crit)
-        else:
-            A = get_effective_stat(attacker, 'spa', state, ignore_negative_stages=is_crit)
-            
-        # Pick defensive stats
-        if move['category'] == 'Physical':
-            # Critical hits ignore defender positive stages
-            D = get_effective_stat(target, 'def', state, ignore_positive_stages=is_crit)
-        else:
-            D = get_effective_stat(target, 'spd', state, ignore_positive_stages=is_crit)
-            
-        # Clamp defense
-        D = max(1.0, D)
-        
-        # Standard Damage Math
-        base_dmg = ((22 * power * A / D) / 50) + 2
-        
-        if is_crit:
-            base_dmg *= 1.5
-            
-        # Weather damage adjustments
-        if move_type == 'Fire':
-            if state['weather'] == 'Sun':
-                base_dmg *= 1.5
-            elif state['weather'] == 'Rain':
-                base_dmg *= 0.5
-        elif move_type == 'Water':
-            if state['weather'] == 'Rain':
-                base_dmg *= 1.5
-            elif state['weather'] == 'Sun':
-                base_dmg *= 0.5
-                
-        # Terrain damage adjustments (Psychic Terrain boosts Psychic moves by 1.3x)
-        if move_type == 'Psychic' and state.get('psychic_terrain', 0) > 0:
-            base_dmg *= 1.3
-                
-        # STAB (Same Type Attack Bonus)
-        if move_type in attacker['types']:
-            base_dmg *= 1.5
-            
-        # Apply type effectiveness
-        base_dmg *= eff
-        
-        # Apply spread move reductions
-        base_dmg *= spread_mult
-        
-        # Supreme Overlord ability damage boost (Kingambit)
-        if attacker['ability'] == 'Supreme Overlord':
-            allies_list = state['player_active'] + state['player_bench'] if attacker['is_player'] else state['opponent_active'] + state['opponent_bench']
-            fainted_count = sum(1 for p in allies_list if p and p['hp'] <= 0)
-            base_dmg *= (1.0 + 0.1 * fainted_count)
-        
-        # Apply random damage variance (0.85 - 1.00)
-        base_dmg *= random.uniform(0.85, 1.0)
-        
-        damage = max(1, int(base_dmg))
-        
-        # Apply damage to target
-        was_alive = target['hp'] > 0
-        target['hp'] = max(0, target['hp'] - damage)
-        print(f"  {target['name']} took {damage} damage! ({target['hp']}/{target['max_hp']} HP)")
-        
-        # Track statistics
-        attacker_name = attacker['name']
-        state['damage_dealt'][attacker_name] = state['damage_dealt'].get(attacker_name, 0) + damage
-        if was_alive and target['hp'] == 0:
-            state['kos_achieved'][attacker_name] = state['kos_achieved'].get(attacker_name, 0) + 1
-            
-        if is_crit:
-            print(f"  {YELLOW}A critical hit!{RESET}")
-            
-        if eff > 1:
-            print(f"  {GREEN}It's super effective!{RESET}")
-        elif eff < 1 and eff > 0:
-            print(f"  {YELLOW}It's not very effective...{RESET}")
-            
-        # Stamina Ability checks
-        if target['ability'] == 'Stamina' and target['hp'] > 0:
-            target['stat_stages']['def'] = min(6, target['stat_stages']['def'] + 1)
-            print(f"  {YELLOW}[Ability] Archaludon's Stamina boosted its Defense! (Def: {target['stat_stages']['def']:+d}){RESET}")
-            
-        # Rough Skin Ability check
-        if target['ability'] == 'Rough Skin' and move['category'] == 'Physical' and attacker['hp'] > 0:
-            recoil_dmg = attacker['max_hp'] // 8
-            attacker['hp'] = max(0, attacker['hp'] - recoil_dmg)
-            print(f"  {YELLOW}[Ability] {attacker['name']} was hurt by {target['name']}'s Rough Skin! ({attacker['hp']}/{attacker['max_hp']} HP){RESET}")
+            if num_hits > 1:
+                print(f"  - Hit #{hit_idx + 1}! -")
 
-        # Giga Drain heals 50% damage
-        if move_name == 'Giga Drain' and attacker['hp'] > 0:
-            heal = damage // 2
-            attacker['hp'] = min(attacker['max_hp'], attacker['hp'] + heal)
-            print(f"  {attacker['name']} recovered {heal} HP! ({attacker['hp']}/{attacker['max_hp']} HP)")
+            # Attack Damage calculations
+            power = move['power']
+            move_type = move['type']
             
-        # Scald: 30% Burn chance (Fire-types are immune to burn)
-        if move_name == 'Scald' and target['hp'] > 0 and target['status'] is None:
-            if 'Fire' not in target['types'] and random.random() < 0.3:
-                target['status'] = 'Burn'
-                print(f"  {RED}[Status] {target['name']} was burned!{RESET}")
+            # Weather Ball adjustments
+            if move_name == 'Weather Ball':
+                if state['weather'] == 'Sun':
+                    move_type = 'Fire'
+                    power = 100
+                elif state['weather'] == 'Rain':
+                    move_type = 'Water'
+                    power = 100
+                else:
+                    move_type = 'Normal'
+                    power = 50
+                    
+            # Eruption scales with HP percentage
+            if move_name == 'Eruption':
+                power = int(150 * (attacker['hp'] / attacker['max_hp']))
+                power = max(1, power)
                 
-        # Snarl: lowers target's SpA by 1 stage
-        if move_name == 'Snarl' and target['hp'] > 0:
-            lower_stat_stage(target, 'spa', 1, attacker, state)
+            # Facade power boost
+            if move_name == 'Facade' and attacker['status'] is not None:
+                power = 140
+                
+            # Expanding Force terrain adjustment
+            if move_name == 'Expanding Force' and state.get('psychic_terrain', 0) > 0:
+                power = 120
+                
+            # Check Critical Hit (1/24 standard crit rate, Surging Strikes always crits)
+            is_crit = (random.random() < (1.0 / 24.0)) or (move_name == 'Surging Strikes')
             
-        # Icy Wind: lowers target's Speed by 1 stage
-        if move_name == 'Icy Wind' and target['hp'] > 0:
-            lower_stat_stage(target, 'spe', 1, attacker, state)
+            # Pick offensive stats
+            if move_name == 'Body Press':
+                # Critical hits ignore attacker negative stages
+                A = get_effective_stat(attacker, 'def', state, ignore_negative_stages=is_crit)
+            elif move['category'] == 'Physical':
+                A = get_effective_stat(attacker, 'atk', state, ignore_negative_stages=is_crit)
+            else:
+                A = get_effective_stat(attacker, 'spa', state, ignore_negative_stages=is_crit)
+                
+            # Pick defensive stats
+            if move['category'] == 'Physical':
+                # Critical hits ignore defender positive stages
+                D = get_effective_stat(target, 'def', state, ignore_positive_stages=is_crit)
+            else:
+                D = get_effective_stat(target, 'spd', state, ignore_positive_stages=is_crit)
+                
+            # Clamp defense
+            D = max(1.0, D)
             
-        # Flare Blitz/Brave Bird: 33% recoil damage
-        if move_name in ['Flare Blitz', 'Brave Bird'] and target['hp'] > 0 and attacker['hp'] > 0:
-            recoil = damage // 3
-            attacker['hp'] = max(0, attacker['hp'] - recoil)
-            print(f"  {attacker['name']} took {recoil} recoil damage! ({attacker['hp']}/{attacker['max_hp']} HP)")
+            # Standard Damage Math
+            base_dmg = ((22 * power * A / D) / 50) + 2
+            
+            if is_crit:
+                base_dmg *= 1.5
                 
-        # Tri Attack: 10% Paralysis chance
-        if move_name == 'Tri Attack' and target['hp'] > 0 and target['status'] is None:
-            if random.random() < 0.10:
-                target['status'] = 'Paralyzed'
-                print(f"  {YELLOW}[Status] {target['name']} was paralyzed!{RESET}")
+            # Weather damage adjustments
+            if move_type == 'Fire':
+                if state['weather'] == 'Sun':
+                    base_dmg *= 1.5
+                elif state['weather'] == 'Rain':
+                    base_dmg *= 0.5
+            elif move_type == 'Water':
+                if state['weather'] == 'Rain':
+                    base_dmg *= 1.5
+                elif state['weather'] == 'Sun':
+                    base_dmg *= 0.5
+                    
+            # Terrain damage adjustments (Psychic Terrain boosts Psychic moves by 1.3x)
+            if move_type == 'Psychic' and state.get('psychic_terrain', 0) > 0:
+                base_dmg *= 1.3
+                    
+            # STAB (Same Type Attack Bonus)
+            if move_type in attacker['types']:
+                base_dmg *= 1.5
                 
+            # Apply type effectiveness
+            base_dmg *= eff
+            
+            # Apply spread move reductions
+            base_dmg *= spread_mult
+            
+            # Supreme Overlord ability damage boost (Kingambit)
+            if attacker['ability'] == 'Supreme Overlord':
+                allies_list = state['player_active'] + state['player_bench'] if attacker['is_player'] else state['opponent_active'] + state['opponent_bench']
+                fainted_count = sum(1 for p in allies_list if p and p['hp'] <= 0)
+                base_dmg *= (1.0 + 0.1 * fainted_count)
+            
+            # Apply random damage variance (0.85 - 1.00)
+            base_dmg *= random.uniform(0.85, 1.0)
+            
+            damage = max(1, int(base_dmg))
+            
+            # Apply damage to target
+            was_alive = target['hp'] > 0
+            target['hp'] = max(0, target['hp'] - damage)
+            print(f"  {target['name']} took {damage} damage! ({target['hp']}/{target['max_hp']} HP)")
+            
+            # Track statistics
+            attacker_name = attacker['name']
+            state['damage_dealt'][attacker_name] = state['damage_dealt'].get(attacker_name, 0) + damage
+            if was_alive and target['hp'] == 0:
+                state['kos_achieved'][attacker_name] = state['kos_achieved'].get(attacker_name, 0) + 1
+                
+            if is_crit:
+                print(f"  {YELLOW}A critical hit!{RESET}")
+                
+            if eff > 1:
+                print(f"  {GREEN}It's super effective!{RESET}")
+            elif eff < 1 and eff > 0:
+                print(f"  {YELLOW}It's not very effective...{RESET}")
+                
+            # Stamina Ability checks
+            if target['ability'] == 'Stamina' and target['hp'] > 0:
+                target['stat_stages']['def'] = min(6, target['stat_stages']['def'] + 1)
+                print(f"  {YELLOW}[Ability] {target['name']}'s Stamina boosted its Defense! (Def: {target['stat_stages']['def']:+d}){RESET}")
+                
+            # Rough Skin Ability check
+            if target['ability'] == 'Rough Skin' and move['category'] == 'Physical' and attacker['hp'] > 0:
+                recoil_dmg = attacker['max_hp'] // 8
+                attacker['hp'] = max(0, attacker['hp'] - recoil_dmg)
+                print(f"  {YELLOW}[Ability] {attacker['name']} was hurt by {target['name']}'s Rough Skin! ({attacker['hp']}/{attacker['max_hp']} HP){RESET}")
+    
+            # Giga Drain heals 50% damage
+            if move_name == 'Giga Drain' and attacker['hp'] > 0:
+                heal = damage // 2
+                attacker['hp'] = min(attacker['max_hp'], attacker['hp'] + heal)
+                print(f"  {attacker['name']} recovered {heal} HP! ({attacker['hp']}/{attacker['max_hp']} HP)")
+                
+            # Scald: 30% Burn chance (Fire-types are immune to burn)
+            if move_name == 'Scald' and target['hp'] > 0 and target['status'] is None:
+                if 'Fire' not in target['types'] and random.random() < 0.3:
+                    target['status'] = 'Burn'
+                    print(f"  {RED}[Status] {target['name']} was burned!{RESET}")
+                    
+            # Snarl: lowers target's SpA by 1 stage
+            if move_name == 'Snarl' and target['hp'] > 0:
+                lower_stat_stage(target, 'spa', 1, attacker, state)
+                
+            # Icy Wind: lowers target's Speed by 1 stage
+            if move_name == 'Icy Wind' and target['hp'] > 0:
+                lower_stat_stage(target, 'spe', 1, attacker, state)
+                
+            # Flare Blitz/Brave Bird: 33% recoil damage
+            if move_name in ['Flare Blitz', 'Brave Bird'] and target['hp'] > 0 and attacker['hp'] > 0:
+                recoil = damage // 3
+                attacker['hp'] = max(0, attacker['hp'] - recoil)
+                print(f"  {attacker['name']} took {recoil} recoil damage! ({attacker['hp']}/{attacker['max_hp']} HP)")
+                    
+            # Tri Attack: 10% Paralysis chance
+            if move_name == 'Tri Attack' and target['hp'] > 0 and target['status'] is None:
+                if random.random() < 0.10:
+                    target['status'] = 'Paralyzed'
+                    print(f"  {YELLOW}[Status] {target['name']} was paralyzed!{RESET}")
+            
+            hits_landed += 1
+            
+        if num_hits > 1 and hits_landed > 0:
+            print(f"  Hit the target {hits_landed} times!")
+            
     # Attacker recoil/stat drops
     if move_name == 'Draco Meteor' and attacker['hp'] > 0:
         lower_stat_stage(attacker, 'spa', 2, None, state)
@@ -1367,6 +1402,14 @@ def get_ai_actions(state):
 def resolve_actions(player_actions, ai_actions, state):
     all_actions = player_actions + ai_actions
     
+    # Store actions in state for reference (e.g. Sucker Punch checks)
+    state['current_actions'] = all_actions
+    
+    # Initialize moved_this_turn status
+    for p in state['player_active'] + state['opponent_active']:
+        if p:
+            p['moved_this_turn'] = False
+            
     # 1. Resolve manual switches first (Priority +6)
     switches = [a for a in all_actions if a['type'] == 'switch']
     for s in switches:
@@ -1418,6 +1461,7 @@ def resolve_actions(player_actions, ai_actions, state):
             foes = state['player_active']
             
         execute_move(attacker, m['move_name'], m['target_idx'], allies, foes, state)
+        attacker['moved_this_turn'] = True
         check_faints(state)
 
 
