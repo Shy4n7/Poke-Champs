@@ -37,8 +37,6 @@ TYPE_EFFECTIVENESS = {
 
 # Moves Database
 # Protect has priority 4. Other moves have priority 0.
-# Moves Database
-# Protect has priority 4. Other moves have priority 0.
 MOVE_DB = {
     'Heat Wave': {'power': 95, 'type': 'Fire', 'category': 'Special', 'target': 'All Enemies', 'accuracy': 90, 'priority': 0},
     'Solar Beam': {'power': 120, 'type': 'Grass', 'category': 'Special', 'target': 'Single Enemy', 'accuracy': 100, 'priority': 0},
@@ -58,8 +56,6 @@ MOVE_DB = {
     'Headlong Rush': {'power': 120, 'type': 'Ground', 'category': 'Physical', 'target': 'Single Enemy', 'accuracy': 100, 'priority': 0},
     'Close Combat': {'power': 120, 'type': 'Fighting', 'category': 'Physical', 'target': 'Single Enemy', 'accuracy': 100, 'priority': 0},
     'Rock Slide': {'power': 75, 'type': 'Rock', 'category': 'Physical', 'target': 'All Enemies', 'accuracy': 90, 'priority': 0},
-    
-    # AI Moves
     'Scald': {'power': 80, 'type': 'Water', 'category': 'Special', 'target': 'Single Enemy', 'accuracy': 100, 'priority': 0},
     'Icy Wind': {'power': 55, 'type': 'Ice', 'category': 'Special', 'target': 'All Enemies', 'accuracy': 95, 'priority': 0},
     'Muddy Water': {'power': 90, 'type': 'Water', 'category': 'Special', 'target': 'All Enemies', 'accuracy': 85, 'priority': 0},
@@ -75,12 +71,31 @@ MOVE_DB = {
     'Hydro Pump': {'power': 110, 'type': 'Water', 'category': 'Special', 'target': 'Single Enemy', 'accuracy': 80, 'priority': 0},
     'Snarl': {'power': 55, 'type': 'Dark', 'category': 'Special', 'target': 'All Enemies', 'accuracy': 95, 'priority': 0},
     'Flare Blitz': {'power': 120, 'type': 'Fire', 'category': 'Physical', 'target': 'Single Enemy', 'accuracy': 100, 'priority': 0},
-    'Tailwind': {'power': 0, 'type': 'Flying', 'category': 'Status', 'target': 'Self', 'accuracy': 100, 'priority': 0}
+    'Tailwind': {'power': 0, 'type': 'Flying', 'category': 'Status', 'target': 'Self', 'accuracy': 100, 'priority': 0},
+
+    # New Moves
+    'Surging Strikes': {'power': 75, 'type': 'Water', 'category': 'Physical', 'target': 'Single Enemy', 'accuracy': 100, 'priority': 0},
+    'Aqua Jet': {'power': 40, 'type': 'Water', 'category': 'Physical', 'target': 'Single Enemy', 'accuracy': 100, 'priority': 1},
+    'Facade': {'power': 70, 'type': 'Normal', 'category': 'Physical', 'target': 'Single Enemy', 'accuracy': 100, 'priority': 0},
+    'Psychic': {'power': 90, 'type': 'Psychic', 'category': 'Special', 'target': 'Single Enemy', 'accuracy': 100, 'priority': 0},
+    'Helping Hand': {'power': 0, 'type': 'Normal', 'category': 'Status', 'target': 'Self', 'accuracy': 100, 'priority': 0},
+    'Expanding Force': {'power': 80, 'type': 'Psychic', 'category': 'Special', 'target': 'Single Enemy', 'accuracy': 100, 'priority': 0},
+    'Kowtow Cleave': {'power': 85, 'type': 'Dark', 'category': 'Physical', 'target': 'Single Enemy', 'accuracy': 100, 'priority': 0},
+    'Iron Head': {'power': 80, 'type': 'Steel', 'category': 'Physical', 'target': 'Single Enemy', 'accuracy': 100, 'priority': 0},
+    'Sucker Punch': {'power': 70, 'type': 'Dark', 'category': 'Physical', 'target': 'Single Enemy', 'accuracy': 100, 'priority': 1},
+    'Crunch': {'power': 80, 'type': 'Dark', 'category': 'Physical', 'target': 'Single Enemy', 'accuracy': 100, 'priority': 0},
+    'Stomping Tantrum': {'power': 75, 'type': 'Ground', 'category': 'Physical', 'target': 'Single Enemy', 'accuracy': 100, 'priority': 0},
+    'High Horsepower': {'power': 95, 'type': 'Ground', 'category': 'Physical', 'target': 'Single Enemy', 'accuracy': 95, 'priority': 0},
+    'Earthquake': {'power': 100, 'type': 'Ground', 'category': 'Physical', 'target': 'All Enemies', 'accuracy': 100, 'priority': 0},
+    'Brave Bird': {'power': 120, 'type': 'Flying', 'category': 'Physical', 'target': 'Single Enemy', 'accuracy': 100, 'priority': 0},
+    'Roost': {'power': 0, 'type': 'Flying', 'category': 'Status', 'target': 'Self', 'accuracy': 100, 'priority': 0},
+    'Make It Rain': {'power': 120, 'type': 'Steel', 'category': 'Special', 'target': 'All Enemies', 'accuracy': 100, 'priority': 0},
+    'Nasty Plot': {'power': 0, 'type': 'Dark', 'category': 'Status', 'target': 'Self', 'accuracy': 100, 'priority': 0}
 }
 
 # Pokémon Database (Standard Neutral Level 50 competitive spreads)
 POKEMON_DB = {
-    # Player Pool
+    # --- SUN TEAM ---
     'Charizard': {
         'types': ['Fire', 'Flying'],
         'stats': {'hp': 153, 'atk': 104, 'def': 98, 'spa': 129, 'spd': 105, 'spe': 120},
@@ -123,8 +138,14 @@ POKEMON_DB = {
         'ability': 'Protosynthesis',
         'moves': ['Headlong Rush', 'Close Combat', 'Rock Slide', 'Protect']
     },
-    
-    # AI Opponent Pool (Rain/Trick Room)
+    'Flutter Mane': {
+        'types': ['Ghost', 'Fairy'],
+        'stats': {'hp': 130, 'atk': 55, 'def': 55, 'spa': 187, 'spd': 155, 'spe': 187},
+        'ability': 'Protosynthesis',
+        'moves': ['Moonblast', 'Shadow Ball', 'Dazzling Gleam', 'Protect']
+    },
+
+    # --- RAIN TEAM ---
     'Politoed': {
         'types': ['Water'],
         'stats': {'hp': 165, 'atk': 85, 'def': 95, 'spa': 142, 'spd': 120, 'spe': 90},
@@ -143,23 +164,99 @@ POKEMON_DB = {
         'ability': 'Stamina',
         'moves': ['Electro Shot', 'Flash Cannon', 'Draco Meteor', 'Body Press']
     },
-    'Porygon2': {
-        'types': ['Normal'],
-        'stats': {'hp': 160, 'atk': 90, 'def': 110, 'spa': 157, 'spd': 115, 'spe': 80},
-        'ability': 'Download',
-        'moves': ['Trick Room', 'Recover', 'Tri Attack', 'Ice Beam']
-    },
     'Ludicolo': {
         'types': ['Water', 'Grass'],
         'stats': {'hp': 155, 'atk': 90, 'def': 90, 'spa': 142, 'spd': 120, 'spe': 132},
         'ability': 'Swift Swim',
         'moves': ['Hydro Pump', 'Giga Drain', 'Ice Beam', 'Protect']
     },
+    'Pelipper': {
+        'types': ['Water', 'Flying'],
+        'stats': {'hp': 165, 'atk': 70, 'def': 132, 'spa': 147, 'spd': 100, 'spe': 117},
+        'ability': 'Drizzle',
+        'moves': ['Hurricane', 'Hydro Pump', 'Tailwind', 'Protect']
+    },
+    'Urshifu': {
+        'types': ['Water', 'Fighting'],
+        'stats': {'hp': 175, 'atk': 182, 'def': 132, 'spa': 63, 'spd': 80, 'spe': 122},
+        'ability': 'Unseen Fist',
+        'moves': ['Surging Strikes', 'Close Combat', 'Aqua Jet', 'Protect']
+    },
+
+    # --- TRICK ROOM TEAM ---
+    'Porygon2': {
+        'types': ['Normal'],
+        'stats': {'hp': 160, 'atk': 90, 'def': 110, 'spa': 157, 'spd': 115, 'spe': 80},
+        'ability': 'Download',
+        'moves': ['Trick Room', 'Recover', 'Tri Attack', 'Ice Beam']
+    },
+    'Indeedee-F': {
+        'types': ['Psychic', 'Normal'],
+        'stats': {'hp': 175, 'atk': 60, 'def': 115, 'spa': 128, 'spd': 157, 'spe': 115},
+        'ability': 'Psychic Surge',
+        'moves': ['Psychic', 'Dazzling Gleam', 'Helping Hand', 'Protect']
+    },
+    'Ursaluna': {
+        'types': ['Ground', 'Normal'],
+        'stats': {'hp': 205, 'atk': 200, 'def': 137, 'spa': 65, 'spd': 100, 'spe': 70},
+        'ability': 'Guts',
+        'moves': ['Facade', 'Headlong Rush', 'Close Combat', 'Protect']
+    },
+    'Armarouge': {
+        'types': ['Fire', 'Psychic'],
+        'stats': {'hp': 160, 'atk': 80, 'def': 115, 'spa': 177, 'spd': 100, 'spe': 95},
+        'ability': 'Flash Fire',
+        'moves': ['Expanding Force', 'Heat Wave', 'Shadow Ball', 'Protect']
+    },
+    'Kingambit': {
+        'types': ['Dark', 'Steel'],
+        'stats': {'hp': 175, 'atk': 185, 'def': 132, 'spa': 72, 'spd': 112, 'spe': 70},
+        'ability': 'Supreme Overlord',
+        'moves': ['Kowtow Cleave', 'Iron Head', 'Sucker Punch', 'Protect']
+    },
     'Incineroar': {
         'types': ['Fire', 'Dark'],
         'stats': {'hp': 170, 'atk': 135, 'def': 110, 'spa': 80, 'spd': 110, 'spe': 80},
         'ability': 'Intimidate',
         'moves': ['Flare Blitz', 'Knock Off', 'Snarl', 'Protect']
+    },
+
+    # --- SANDSTORM TEAM ---
+    'Tyranitar': {
+        'types': ['Rock', 'Dark'],
+        'stats': {'hp': 175, 'atk': 182, 'def': 122, 'spa': 115, 'spd': 132, 'spe': 91},
+        'ability': 'Sand Stream',
+        'moves': ['Rock Slide', 'Crunch', 'Stomping Tantrum', 'Protect']
+    },
+    'Excadrill': {
+        'types': ['Ground', 'Steel'],
+        'stats': {'hp': 185, 'atk': 185, 'def': 80, 'spa': 63, 'spd': 85, 'spe': 130},
+        'ability': 'Sand Rush',
+        'moves': ['Iron Head', 'High Horsepower', 'Rock Slide', 'Protect']
+    },
+    'Garchomp': {
+        'types': ['Dragon', 'Ground'],
+        'stats': {'hp': 183, 'atk': 180, 'def': 115, 'spa': 90, 'spd': 105, 'spe': 154},
+        'ability': 'Rough Skin',
+        'moves': ['Earthquake', 'Dragon Claw', 'Rock Slide', 'Protect']
+    },
+    'Gastrodon': {
+        'types': ['Water', 'Ground'],
+        'stats': {'hp': 216, 'atk': 93, 'def': 88, 'spa': 142, 'spd': 112, 'spe': 59},
+        'ability': 'Storm Drain',
+        'moves': ['Muddy Water', 'Earth Power', 'Recover', 'Protect']
+    },
+    'Corviknight': {
+        'types': ['Flying', 'Steel'],
+        'stats': {'hp': 205, 'atk': 107, 'def': 125, 'spa': 63, 'spd': 115, 'spe': 87},
+        'ability': 'Mirror Armor',
+        'moves': ['Brave Bird', 'Body Press', 'Tailwind', 'Roost']
+    },
+    'Gholdengo': {
+        'types': ['Steel', 'Ghost'],
+        'stats': {'hp': 162, 'atk': 72, 'def': 115, 'spa': 183, 'spd': 111, 'spe': 136},
+        'ability': 'Good as Gold',
+        'moves': ['Make It Rain', 'Shadow Ball', 'Nasty Plot', 'Protect']
     }
 }
 
@@ -173,6 +270,17 @@ def get_stage_multiplier(stage):
         return (2 + stage) / 2
     else:
         return 2 / (2 - stage)
+
+
+def lower_stat_stage(target, stat, stages, attacker, state):
+    if target['ability'] == 'Mirror Armor' and attacker and target['is_player'] != attacker['is_player']:
+        print(f"  {YELLOW}[Ability] {target['name']}'s Mirror Armor reflected the stat drop to {attacker['name']}!{RESET}")
+        lower_stat_stage(attacker, stat, stages, None, state)
+        return
+    
+    current = target['stat_stages'].get(stat, 0)
+    target['stat_stages'][stat] = max(-6, current - stages)
+    print(f"  {target['name']}'s {stat.upper()} fell! ({stat.upper()}: {target['stat_stages'][stat]:+d})")
 
 
 def get_effective_stat(pokemon, stat_name, state, ignore_negative_stages=False, ignore_positive_stages=False):
@@ -192,6 +300,8 @@ def get_effective_stat(pokemon, stat_name, state, ignore_negative_stages=False, 
             val *= 2.0
         elif pokemon['ability'] == 'Swift Swim' and weather == 'Rain':
             val *= 2.0
+        elif pokemon['ability'] == 'Sand Rush' and weather == 'Sandstorm':
+            val *= 2.0
         elif pokemon['ability'] == 'Protosynthesis' and weather == 'Sun' and pokemon['name'] == 'Flutter Mane':
             val *= 1.5
         # Tailwind speed multiplier
@@ -209,8 +319,16 @@ def get_effective_stat(pokemon, stat_name, state, ignore_negative_stages=False, 
             val *= 1.3
         # Burn reduces physical attack damage
         if pokemon['status'] == 'Burn':
-            val *= 0.5
+            if pokemon['ability'] == 'Guts':
+                val *= 1.5
+            else:
+                val *= 0.5
             
+    # Rock-type Sandstorm SpD boost
+    elif stat_name == 'spd':
+        if 'Rock' in pokemon['types'] and weather == 'Sandstorm':
+            val *= 1.5
+
     # Porygon2 Eviolite bulk boost
     if pokemon['name'] == 'Porygon2' and stat_name in ['def', 'spd']:
         val *= 1.5
@@ -276,6 +394,13 @@ def trigger_entrance_ability(pokemon, allies, foes, state):
         state['weather'] = 'Rain'
         state['weather_turns'] = 5
         print(f"{BLUE}[Weather] {name}'s Drizzle summoned the Rain!{RESET}")
+    elif ability == 'Sand Stream':
+        state['weather'] = 'Sandstorm'
+        state['weather_turns'] = 5
+        print(f"{YELLOW}[Weather] {name}'s Sand Stream summoned a Sandstorm!{RESET}")
+    elif ability == 'Psychic Surge':
+        state['psychic_terrain'] = 5
+        print(f"{PURPLE}[Terrain] {name}'s Psychic Surge set Psychic Terrain!{RESET}")
     elif ability == 'Download':
         # Compare SpD vs Def of active opponents
         total_def = sum(get_effective_stat(p, 'def', state) for p in foes if p and p['hp'] > 0)
@@ -290,8 +415,12 @@ def trigger_entrance_ability(pokemon, allies, foes, state):
         print(f"{YELLOW}[Ability] {name}'s Intimidate cut the Attack of foes!{RESET}")
         for foe in foes:
             if foe and foe['hp'] > 0:
-                foe['stat_stages']['atk'] = max(-6, foe['stat_stages']['atk'] - 1)
-                print(f"  {foe['name']}'s Attack fell! (Atk: {foe['stat_stages']['atk']:+d})")
+                lower_stat_stage(foe, 'atk', 1, pokemon, state)
+                
+    # Guts Flame Orb trigger
+    if ability == 'Guts' and pokemon['status'] is None:
+        pokemon['status'] = 'Burn'
+        print(f"  {RED}[Item] {name}'s Flame Orb burned it!{RESET}")
 
 
 def perform_switch(is_player, active_idx, bench_idx, state):
@@ -391,12 +520,14 @@ def draw_dashboard(state):
     # Header box top border
     print(f"{CYAN}+----------------------------------------------------------+{RESET}")
     
-    # Weather and Trick Room Indicators
+    # Weather, Trick Room, and Terrain Indicators
     weather_str = "NONE"
     if state['weather'] == 'Sun':
         weather_str = "SUN"
     elif state['weather'] == 'Rain':
         weather_str = "RAIN"
+    elif state['weather'] == 'Sandstorm':
+        weather_str = "SANDSTORM"
         
     weather_text = f"WEATHER: {weather_str}"
     if state['weather'] != 'None':
@@ -406,11 +537,15 @@ def draw_dashboard(state):
     if state['trick_room'] > 0:
         tr_text = f" | TRICK ROOM ({state['trick_room']}t)"
         
-    full_weather_plain = f" {weather_text}{tr_text}"
+    pt_text = ""
+    if state.get('psychic_terrain', 0) > 0:
+        pt_text = f" | PSYCHIC TERRAIN ({state['psychic_terrain']}t)"
+        
+    full_weather_plain = f" {weather_text}{tr_text}{pt_text}"
     weather_pad = " " * max(0, 56 - len(full_weather_plain))
     
     # Colorize weather text
-    w_color = YELLOW if state['weather'] == 'Sun' else (BLUE if state['weather'] == 'Rain' else WHITE)
+    w_color = YELLOW if state['weather'] == 'Sun' else (BLUE if state['weather'] == 'Rain' else (YELLOW if state['weather'] == 'Sandstorm' else WHITE))
     colored_weather_str = f"{w_color}{weather_str}{RESET}"
     
     colored_weather_text = f"WEATHER: {colored_weather_str}"
@@ -421,7 +556,11 @@ def draw_dashboard(state):
     if state['trick_room'] > 0:
         colored_tr_text = f" | {PURPLE}TRICK ROOM ({state['trick_room']}t){RESET}"
         
-    print(f"{CYAN}|{RESET} {colored_weather_text}{colored_tr_text}{weather_pad} {CYAN}|{RESET}")
+    colored_pt_text = ""
+    if state.get('psychic_terrain', 0) > 0:
+        colored_pt_text = f" | {PURPLE}PSYCHIC TERRAIN ({state['psychic_terrain']}t){RESET}"
+        
+    print(f"{CYAN}|{RESET} {colored_weather_text}{colored_tr_text}{colored_pt_text}{weather_pad} {CYAN}|{RESET}")
     print(f"{CYAN}+----------------------------------------------------------+{RESET}")
     
     # Opponents Active
@@ -523,38 +662,62 @@ def execute_move(attacker, move_name, target_idx, allies, foes, state):
     
     # Locate valid targets
     targets = []
-    if move['target'] == 'Self':
-        targets = [attacker]
-    elif move['target'] == 'All Enemies':
-        targets = [p for p in foes if p and p['hp'] > 0]
-    else:  # Single Enemy
-        target_pkmn = foes[target_idx]
-        if target_pkmn is None or target_pkmn['hp'] <= 0:
-            # Retarget to the other active opponent if available
-            other_idx = 1 - target_idx
-            other_pkmn = foes[other_idx]
-            if other_pkmn and other_pkmn['hp'] > 0:
-                target_pkmn = other_pkmn
-                print(f"  {YELLOW}[System] Retargeted to {target_pkmn['name']}.{RESET}")
-            else:
-                target_pkmn = None
-        if target_pkmn:
+    
+    # Redirect single-target Water moves to Storm Drain user if present on target's side
+    if move['target'] == 'Single Enemy' and move['type'] == 'Water':
+        storm_drain_users = [p for p in foes if p and p['hp'] > 0 and p['ability'] == 'Storm Drain']
+        if storm_drain_users:
+            target_pkmn = storm_drain_users[0]
             targets = [target_pkmn]
+            print(f"  {BLUE}[Ability] {target_pkmn['name']}'s Storm Drain drew in the water move!{RESET}")
+            
+    if not targets:
+        if move['target'] == 'Self':
+            targets = [attacker]
+        elif move['target'] == 'All Enemies' or (move_name == 'Expanding Force' and state.get('psychic_terrain', 0) > 0):
+            targets = [p for p in foes if p and p['hp'] > 0]
+        else:  # Single Enemy
+            target_pkmn = foes[target_idx]
+            if target_pkmn is None or target_pkmn['hp'] <= 0:
+                # Retarget to the other active opponent if available
+                other_idx = 1 - target_idx
+                other_pkmn = foes[other_idx]
+                if other_pkmn and other_pkmn['hp'] > 0:
+                    target_pkmn = other_pkmn
+                    print(f"  {YELLOW}[System] Retargeted to {target_pkmn['name']}.{RESET}")
+                else:
+                    target_pkmn = None
+            if target_pkmn:
+                targets = [target_pkmn]
             
     if not targets:
         print(f"  {GRAY}But there was no target...{RESET}")
         return
         
     # Spread moves modifiers
-    is_spread = move['target'] == 'All Enemies'
+    is_spread = move['target'] == 'All Enemies' or (move_name == 'Expanding Force' and state.get('psychic_terrain', 0) > 0)
     spread_mult = 0.75 if (is_spread and len(targets) > 1) else 1.0
     
     # Execute against each target
     for target in targets:
+        # Good as Gold check (blocks status moves from opponent)
+        if target['ability'] == 'Good as Gold' and move['category'] == 'Status' and target['is_player'] != attacker['is_player'] and move['target'] != 'Self':
+            print(f"  {YELLOW}[Ability] {target['name']}'s Good as Gold blocked the status move!{RESET}")
+            continue
+
+        # Psychic Terrain check (blocks priority moves targeting grounded opponents)
+        if state.get('psychic_terrain', 0) > 0 and move['priority'] > 0:
+            if 'Flying' not in target['types'] and target['is_player'] != attacker['is_player']:
+                print(f"  {PURPLE}[Terrain] Psychic Terrain protected {target['name']} from priority moves!{RESET}")
+                continue
+
         # Check Protect
         if target['protected_this_turn'] and move['target'] != 'Self':
-            print(f"  {YELLOW}{target['name']} protected itself!{RESET}")
-            continue
+            if attacker['ability'] == 'Unseen Fist':
+                print(f"  {YELLOW}[Ability] {attacker['name']}'s Unseen Fist bypassed the protection!{RESET}")
+            else:
+                print(f"  {YELLOW}{target['name']} protected itself!{RESET}")
+                continue
             
         # Check Accuracy
         move_acc = move['accuracy']
@@ -580,7 +743,7 @@ def execute_move(attacker, move_name, target_idx, allies, foes, state):
                 
         # Status Moves
         if move['category'] == 'Status':
-            if move_name == 'Recover':
+            if move_name in ['Recover', 'Roost']:
                 heal = target['max_hp'] // 2
                 target['hp'] = min(target['max_hp'], target['hp'] + heal)
                 print(f"  {target['name']} recovered {heal} HP! ({target['hp']}/{target['max_hp']})")
@@ -598,8 +761,26 @@ def execute_move(attacker, move_name, target_idx, allies, foes, state):
                 else:
                     state['opponent_tailwind'] = 4
                     print(f"  {YELLOW}[Tailwind] A tailwind blew from behind the opposing team!{RESET}")
+            elif move_name == 'Helping Hand':
+                partners = [p for p in allies if p and p != attacker and p['hp'] > 0]
+                if partners:
+                    partner = partners[0]
+                    partner['stat_stages']['atk'] = min(6, partner['stat_stages']['atk'] + 1)
+                    partner['stat_stages']['spa'] = min(6, partner['stat_stages']['spa'] + 1)
+                    print(f"  {attacker['name']} boosted {partner['name']}'s offensive stats! (Atk:+1, SpA:+1)")
+                else:
+                    print(f"  {attacker['name']} used Helping Hand, but there was no partner on the field!")
+            elif move_name == 'Nasty Plot':
+                target['stat_stages']['spa'] = min(6, target['stat_stages']['spa'] + 2)
+                print(f"  {target['name']}'s Special Attack rose sharply! (SpA: {target['stat_stages']['spa']:+d})")
             continue
             
+        # Storm Drain absorption check
+        if target['ability'] == 'Storm Drain' and move['type'] == 'Water':
+            target['stat_stages']['spa'] = min(6, target['stat_stages']['spa'] + 1)
+            print(f"  {BLUE}[Ability] {target['name']}'s Storm Drain absorbed the Water move and boosted its Special Attack! (SpA: {target['stat_stages']['spa']:+d}){RESET}")
+            continue
+
         # Attack Damage calculations
         power = move['power']
         move_type = move['type']
@@ -621,8 +802,16 @@ def execute_move(attacker, move_name, target_idx, allies, foes, state):
             power = int(150 * (attacker['hp'] / attacker['max_hp']))
             power = max(1, power)
             
-        # Check Critical Hit (1/24 standard Pokemon crit rate)
-        is_crit = random.random() < (1.0 / 24.0)
+        # Facade power boost
+        if move_name == 'Facade' and attacker['status'] is not None:
+            power = 140
+            
+        # Expanding Force terrain adjustment
+        if move_name == 'Expanding Force' and state.get('psychic_terrain', 0) > 0:
+            power = 120
+            
+        # Check Critical Hit (1/24 standard crit rate, Surging Strikes always crits)
+        is_crit = (random.random() < (1.0 / 24.0)) or (move_name == 'Surging Strikes')
         
         # Pick offensive stats
         if move_name == 'Body Press':
@@ -661,6 +850,10 @@ def execute_move(attacker, move_name, target_idx, allies, foes, state):
             elif state['weather'] == 'Sun':
                 base_dmg *= 0.5
                 
+        # Terrain damage adjustments (Psychic Terrain boosts Psychic moves by 1.3x)
+        if move_type == 'Psychic' and state.get('psychic_terrain', 0) > 0:
+            base_dmg *= 1.3
+                
         # STAB (Same Type Attack Bonus)
         if move_type in attacker['types']:
             base_dmg *= 1.5
@@ -670,6 +863,12 @@ def execute_move(attacker, move_name, target_idx, allies, foes, state):
         
         # Apply spread move reductions
         base_dmg *= spread_mult
+        
+        # Supreme Overlord ability damage boost (Kingambit)
+        if attacker['ability'] == 'Supreme Overlord':
+            allies_list = state['player_active'] + state['player_bench'] if attacker['is_player'] else state['opponent_active'] + state['opponent_bench']
+            fainted_count = sum(1 for p in allies_list if p and p['hp'] <= 0)
+            base_dmg *= (1.0 + 0.1 * fainted_count)
         
         # Apply random damage variance (0.85 - 1.00)
         base_dmg *= random.uniform(0.85, 1.0)
@@ -700,6 +899,12 @@ def execute_move(attacker, move_name, target_idx, allies, foes, state):
             target['stat_stages']['def'] = min(6, target['stat_stages']['def'] + 1)
             print(f"  {YELLOW}[Ability] Archaludon's Stamina boosted its Defense! (Def: {target['stat_stages']['def']:+d}){RESET}")
             
+        # Rough Skin Ability check
+        if target['ability'] == 'Rough Skin' and move['category'] == 'Physical' and attacker['hp'] > 0:
+            recoil_dmg = attacker['max_hp'] // 8
+            attacker['hp'] = max(0, attacker['hp'] - recoil_dmg)
+            print(f"  {YELLOW}[Ability] {attacker['name']} was hurt by {target['name']}'s Rough Skin! ({attacker['hp']}/{attacker['max_hp']} HP){RESET}")
+
         # Giga Drain heals 50% damage
         if move_name == 'Giga Drain' and attacker['hp'] > 0:
             heal = damage // 2
@@ -714,16 +919,14 @@ def execute_move(attacker, move_name, target_idx, allies, foes, state):
                 
         # Snarl: lowers target's SpA by 1 stage
         if move_name == 'Snarl' and target['hp'] > 0:
-            target['stat_stages']['spa'] = max(-6, target['stat_stages']['spa'] - 1)
-            print(f"  {target['name']}'s Special Attack fell! (SpA: {target['stat_stages']['spa']:+d})")
+            lower_stat_stage(target, 'spa', 1, attacker, state)
             
         # Icy Wind: lowers target's Speed by 1 stage
         if move_name == 'Icy Wind' and target['hp'] > 0:
-            target['stat_stages']['spe'] = max(-6, target['stat_stages']['spe'] - 1)
-            print(f"  {target['name']}'s Speed fell! (Spe: {target['stat_stages']['spe']:+d})")
+            lower_stat_stage(target, 'spe', 1, attacker, state)
             
-        # Flare Blitz: 33% recoil damage
-        if move_name == 'Flare Blitz' and target['hp'] > 0 and attacker['hp'] > 0:
+        # Flare Blitz/Brave Bird: 33% recoil damage
+        if move_name in ['Flare Blitz', 'Brave Bird'] and target['hp'] > 0 and attacker['hp'] > 0:
             recoil = damage // 3
             attacker['hp'] = max(0, attacker['hp'] - recoil)
             print(f"  {attacker['name']} took {recoil} recoil damage! ({attacker['hp']}/{attacker['max_hp']} HP)")
@@ -736,13 +939,14 @@ def execute_move(attacker, move_name, target_idx, allies, foes, state):
                 
     # Attacker recoil/stat drops
     if move_name == 'Draco Meteor' and attacker['hp'] > 0:
-        attacker['stat_stages']['spa'] = max(-6, attacker['stat_stages']['spa'] - 2)
-        print(f"  {YELLOW}{attacker['name']}'s Special Attack fell sharply! (SpA: {attacker['stat_stages']['spa']:+d}){RESET}")
+        lower_stat_stage(attacker, 'spa', 2, None, state)
         
     elif move_name in ['Close Combat', 'Headlong Rush'] and attacker['hp'] > 0:
-        attacker['stat_stages']['def'] = max(-6, attacker['stat_stages']['def'] - 1)
-        attacker['stat_stages']['spd'] = max(-6, attacker['stat_stages']['spd'] - 1)
-        print(f"  {YELLOW}{attacker['name']}'s Defense and Sp. Def fell! (Def: {attacker['stat_stages']['def']:+d}, SpD: {attacker['stat_stages']['spd']:+d}){RESET}")
+        lower_stat_stage(attacker, 'def', 1, None, state)
+        lower_stat_stage(attacker, 'spd', 1, None, state)
+    
+    elif move_name == 'Make It Rain' and attacker['hp'] > 0:
+        lower_stat_stage(attacker, 'spa', 1, None, state)
 
 
 def check_faints(state):
@@ -1229,6 +1433,18 @@ def resolve_end_of_turn(state):
             
     check_faints(state)
     
+    # 1.5. Sandstorm damage resolution
+    if state['weather'] == 'Sandstorm':
+        print(f"  {YELLOW}[Weather] The sandstorm rages!{RESET}")
+        for p in state['player_active'] + state['opponent_active']:
+            if p and p['hp'] > 0:
+                is_immune = any(t in p['types'] for t in ['Rock', 'Ground', 'Steel'])
+                if not is_immune:
+                    sand_dmg = max(1, p['max_hp'] // 16)
+                    p['hp'] = max(0, p['hp'] - sand_dmg)
+                    print(f"    {p['name']} took {sand_dmg} damage from the sandstorm! ({p['hp']}/{p['max_hp']} HP)")
+        check_faints(state)
+    
     # 2. Weather decays
     if state['weather_turns'] > 0:
         state['weather_turns'] -= 1
@@ -1236,6 +1452,12 @@ def resolve_end_of_turn(state):
             print(f"  {YELLOW}[Weather] The weather returned to normal!{RESET}")
             state['weather'] = 'None'
             
+    # 2.5. Psychic Terrain decays
+    if state.get('psychic_terrain', 0) > 0:
+        state['psychic_terrain'] -= 1
+        if state['psychic_terrain'] == 0:
+            print(f"  {PURPLE}[Terrain] The psychic terrain faded.{RESET}")
+
     # 3. Trick Room decays
     if state['trick_room'] > 0:
         state['trick_room'] -= 1
@@ -1358,9 +1580,65 @@ def run_simulator():
     print(f"         {GREEN}WELCOME TO THE POKEMON VGC SIMULATOR{RESET}         ")
     print("=" * 60)
     
-    # Team Selection Phase
-    pool = ['Charizard', 'Venusaur', 'Torkoal', 'Whimsicott', 'Roaring Moon', 'Great Tusk']
-    opp_pool = ['Politoed', 'Kingdra', 'Archaludon', 'Porygon2', 'Ludicolo', 'Incineroar']
+    # Archetype database
+    ARCHETYPES = {
+        'Sun': ['Charizard', 'Venusaur', 'Torkoal', 'Whimsicott', 'Roaring Moon', 'Great Tusk', 'Flutter Mane'],
+        'Rain': ['Politoed', 'Kingdra', 'Archaludon', 'Pelipper', 'Ludicolo', 'Urshifu'],
+        'Trick Room': ['Porygon2', 'Indeedee-F', 'Ursaluna', 'Armarouge', 'Kingambit', 'Torkoal'],
+        'Sandstorm': ['Tyranitar', 'Excadrill', 'Garchomp', 'Gastrodon', 'Corviknight', 'Gholdengo']
+    }
+    
+    # 1. Select Player Team Archetype
+    print("\nSelect your Team Archetype:")
+    print(f"  1. {YELLOW}Sun Team{RESET} (Sun & Protosynthesis offense)")
+    print(f"  2. {BLUE}Rain Team{RESET} (Rain & Swift Swim speed control)")
+    print(f"  3. {PURPLE}Trick Room Team{RESET} (Slow, bulky heavy hitters)")
+    print(f"  4. {CYAN}Sandstorm Team{RESET} (Sandstorm damage & Rock/Steel synergy)")
+    print(f"  5. {GREEN}Random Draft Team{RESET} (6 random Pokémon from the entire database!)")
+    print(f"  6. {WHITE}Surprise Me{RESET} (Randomly choose one of the 4 archetypes above)")
+    
+    while True:
+        arch_choice = input("Select option (1-6): ").strip()
+        if arch_choice == '1':
+            player_arch = 'Sun'
+            break
+        elif arch_choice == '2':
+            player_arch = 'Rain'
+            break
+        elif arch_choice == '3':
+            player_arch = 'Trick Room'
+            break
+        elif arch_choice == '4':
+            player_arch = 'Sandstorm'
+            break
+        elif arch_choice == '5':
+            player_arch = 'Random Draft'
+            break
+        elif arch_choice == '6':
+            player_arch = random.choice(['Sun', 'Rain', 'Trick Room', 'Sandstorm'])
+            break
+        else:
+            print("Invalid input. Please choose a number from 1 to 6.")
+            
+    # Select AI Archetype
+    ai_arch = random.choice(['Sun', 'Rain', 'Trick Room', 'Sandstorm', 'Random Draft'])
+    
+    # Generate Pools (exactly 6 Pokémon)
+    all_pokemon_names = list(POKEMON_DB.keys())
+    
+    if player_arch == 'Random Draft':
+        pool = random.sample(all_pokemon_names, 6)
+    else:
+        # Sample 6 from the archetype (e.g. Sun has 7, others have 6)
+        pool = random.sample(ARCHETYPES[player_arch], 6)
+        
+    if ai_arch == 'Random Draft':
+        opp_pool = random.sample(all_pokemon_names, 6)
+    else:
+        opp_pool = random.sample(ARCHETYPES[ai_arch], 6)
+        
+    print(f"\n{YELLOW}[System] Player Archetype: {player_arch} | Opponent Archetype: {ai_arch}{RESET}\n")
+    
     selected_names = []
     
     print("=" * 60)
@@ -1431,6 +1709,7 @@ def run_simulator():
         'weather': 'None',
         'weather_turns': 0,
         'trick_room': 0,
+        'psychic_terrain': 0,
         'player_mega_used': False,
         'player_tailwind': 0,
         'opponent_tailwind': 0,
