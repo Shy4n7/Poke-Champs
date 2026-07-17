@@ -1,19 +1,19 @@
 # Pokemon VGC Simulator
 
-A CLI-based double battle simulator designed to replicate the core mechanics of competitive Pokémon VGC (Video Game Championships). Built entirely in Python, it features standard Level 50 competitive spreads, weather synergies, speed control tactics, and Mega Evolution.
+A CLI-based double battle simulator designed to replicate the core mechanics of competitive Pokémon VGC (Video Game Championships). Built entirely in Python, it features standard Level 50 competitions with Pokémon from the Scarlet & Violet DLC.
 
 ---
 
-## 🎮 Features
+## Features
 
 - **Double Battles (2v2)**: True VGC format where you bring 4 Pokémon out of a pool of 6.
 - **Mega Evolution**: Mega Evolve your Pokémon (e.g., Charizard into Mega Charizard Y) mid-battle to change stats and activate weather abilities.
 - **Weather Synergies**:
-  - ☀️ **Sun (Drought)**: Boosts Fire-type moves, triggers *Chlorophyll* (doubles Speed), and activates *Protosynthesis* (increases Attack/Special Attack).
-  - 🌧️ **Rain (Drizzle)**: Boosts Water-type moves, triggers *Swift Swim* (doubles Speed), and enables *Electro Shot* to charge instantly.
+  - **Sun (Drought)**: Boosts Fire-type moves, triggers *Chlorophyll* (doubles Speed), and activates *Protosynthesis* (increases Attack/Special Attack).
+  - **Rain (Drizzle)**: Boosts Water-type moves, triggers *Swift Swim* (doubles Speed), and enables *Electro Shot* to charge instantly.
 - **Speed Control & Field Hazards**:
-  - 🌪️ **Tailwind**: Doubles team speed for 4 turns.
-  - ⏳ **Trick Room**: Reverses the speed order for 5 turns, allowing slower Pokémon to move first.
+  - **Tailwind**: Doubles team speed for 4 turns.
+  - **Trick Room**: Reverses the speed order for 5 turns, allowing slower Pokémon to move first.
 - **Abilities & Stat Buffs**:
   - **Intimidate**: Lowers opponents' Attack stage on entry.
   - **Stamina**: Boosts Defense when hit by attacks.
@@ -26,9 +26,9 @@ A CLI-based double battle simulator designed to replicate the core mechanics of 
 
 ---
 
-## 📋 Team Preview Pools
+## Team Preview Pools
 
-### 🔴 Your Team Pool (Sun/Offense Focused)
+### Your Team Pool (Sun/Offense Focused)
 1. **Charizard** (Fire/Flying) + *Mega Stone (Charizardite Y)*: High Special Attack, activates Drought upon Mega Evolution.
 2. **Venusaur** (Grass/Poison) + *Chlorophyll*: High Speed in Sun, uses Sludge Bomb and Giga Drain.
 3. **Torkoal** (Fire) + *Drought*: Sets sun immediately on entry, utilizes high-power Eruption and Earth Power.
@@ -36,7 +36,7 @@ A CLI-based double battle simulator designed to replicate the core mechanics of 
 5. **Roaring Moon** (Dragon/Dark) + *Protosynthesis*: High physical attacker, boosted by Sun.
 6. **Great Tusk** (Ground/Fighting) + *Protosynthesis*: Physical powerhouse with Close Combat and Headlong Rush.
 
-### 🔵 Opponent Pool (Rain/Trick Room Focused)
+### Opponent Pool (Rain/Trick Room Focused)
 1. **Politoed** (Water) + *Drizzle*: Sets rain on entry.
 2. **Kingdra** (Water/Dragon) + *Swift Swim*: Dangerous sweeper with Hurricane and Draco Meteor.
 3. **Archaludon** (Steel/Dragon) + *Stamina*: Steel tank that fires instant Electro Shots in rain.
@@ -46,7 +46,7 @@ A CLI-based double battle simulator designed to replicate the core mechanics of 
 
 ---
 
-## 🚀 How to Run
+## How to Run
 
 Ensure you have Python 3.8+ installed. Navigate to the repository root directory and run the simulator using:
 
@@ -62,7 +62,7 @@ python PokemonVGC/__init__.py
 
 ---
 
-## 🛠️ Mechanics Reference
+## Mechanics Reference
 
 - **Move Priority**: High-priority moves (like `Protect`) execute before normal moves regardless of speed.
 - **Switching**: Switching a Pokémon out occurs before normal attacks.
